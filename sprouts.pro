@@ -2,7 +2,8 @@ TEMPLATE = app
 
 QT += qml quick
 
-SOURCES += src/main.cpp
+SOURCES += src/main.cpp \
+    src/matrixField.cpp
 
 RESOURCES += \
     qml.qrc
@@ -14,3 +15,6 @@ QML_IMPORT_PATH =
 include(deployment.pri)
 
 OTHER_FILES +=
+
+HEADERS += \
+    src/matrixField.h
