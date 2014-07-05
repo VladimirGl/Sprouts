@@ -6,11 +6,25 @@
 #ifndef MATRIX_FIELD_H
 #define MATRIX_FIELD_H
 
+#include <QVector>
+
 namespace sprouts {
 
 class MatrixField {
 public:
-	MatrixField();
+	MatrixField(int width, int height);
+
+	int at(int x, int y);
+	void set(int value, int x, int y);
+
+protected:
+	bool isCorrectPoint(int x, int y) const;
+
+private:
+	int mWidth;
+	int mHeight;
+
+	QVector<int> mField;
 };
 
 }  // namespace sprouts
