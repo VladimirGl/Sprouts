@@ -10,6 +10,9 @@
 
 namespace sprouts {
 
+const int vertexPoint = -2;
+const int borderPoint = -3;
+
 class MatrixField {
 public:
 	MatrixField(int width, int height);
