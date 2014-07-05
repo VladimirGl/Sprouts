@@ -10,7 +10,8 @@ namespace sprouts {
 MatrixField::MatrixField(int width, int height) :
 	mWidth(width),
 	mHeight(height),
-	mField(mWidth * mHeight, 0) {
+	mField(mWidth * mHeight, 0)
+{
 }
 
 int MatrixField::at(int x, int y) {

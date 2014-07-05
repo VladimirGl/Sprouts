@@ -6,11 +6,45 @@
 #ifndef SPROUTS_GRAPH_H
 #define SPROUTS_GRAPH_H
 
+#include <QBitArray>
+#include <QList>
+
 namespace sprouts {
+
+typedef QList<int> Adjacency;
 
 class SproutsGraph {
 public:
-	SproutsGraph();
+	SproutsGraph(int size, int maxEdges);
+
+	void addConnection(int vertexOne, int vertexTwo);
+	void addVertex();
+
+	bool isContain(int vertex) const;
+	bool isAlive(int vertex) const;
+
+	int numberOfEdjes(int vertex) const;
+
+	int numberOfVertices() const { return mAdjList.size(); }
+
+	// returns the list of vertices, which have less then 3 edges.
+	QList<int> aliveVertices() const;
+
+	// compute number of faces using Euler's characteristic
+	int numberOfFaces();
+
+protected:
+	int numberOfComponents() const;
+	int numberOfEdjes() const;
+
+	void dfs(QBitArray &visited, int curr) const;
+
+private:
+	QList<Adjacency> mAdjList;
+
+	int mMaxEdges;
+
+	int mFaces;
 };
 
 }  // namespace sprouts
