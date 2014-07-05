@@ -3,7 +3,8 @@ TEMPLATE = app
 QT += qml quick
 
 SOURCES += src/main.cpp \
-    src/matrixField.cpp
+    src/matrixField.cpp \
+    src/sproutsGraph.cpp
 
 RESOURCES += \
     qml.qrc
@@ -17,4 +18,5 @@ include(deployment.pri)
 OTHER_FILES +=
 
 HEADERS += \
-    src/matrixField.h
+    src/matrixField.h \
+    src/sproutsGraph.h
