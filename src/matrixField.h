@@ -6,8 +6,8 @@
 #ifndef MATRIX_FIELD_H
 #define MATRIX_FIELD_H
 
-#include <QVector>
 #include <QSet>
+#include <QVector>
 
 namespace sprouts {
 
@@ -27,6 +27,8 @@ public:
 
 	// for more info see http://lodev.org/cgtutor/floodfill.html
 	void floodFill(int value, int x, int y);
+
+	void print() const;
 
 protected:
 	bool isValue(int value) const;

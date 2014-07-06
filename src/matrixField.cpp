@@ -3,9 +3,11 @@
 // LICENSE file.
 // Author: Vladimir Glazachev <glazachev.vladimir@gmail.com>
 
-#include "src/matrixField.h"
+#include <QDebug>
 
 #include "src/floodFillStack.h"
+
+#include "src/matrixField.h"
 
 namespace sprouts {
 
@@ -88,6 +90,15 @@ void MatrixField::floodFill(int value, int x, int y) {
 
 			x1++;
 		}
+	}
+}
+
+void MatrixField::print() const {
+	for (int i = 0; i < mHeight; i++) {
+		for (int j = 0; j < mWidth; j++) {
+			qDebug() << at(j, i) << " ";
+		}
+		qDebug() << "\n";
 	}
 }
 

@@ -6,8 +6,8 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include <QVector>
 #include <QPoint>
+#include <QVector>
 
 namespace sprouts {
 
