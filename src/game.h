@@ -19,7 +19,9 @@ public:
 	Game(int width, int height, const QVector<QPoint> &pointList);
 
 	// connect vertexOne and vertexTwo, and add point to (xNew, yNew).
-	void doTurn(int vertexOne, int vertexTwo, int xNew, int yNew);
+	void doTurn(int vertexOne, int vertexTwo,
+				int xNew, int yNew,
+				const QVector<QPoint> &borderPoints);
 
 	bool hasTurn();
 

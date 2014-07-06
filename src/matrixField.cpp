@@ -27,7 +27,7 @@ void MatrixField::set(int value, int x, int y) {
 }
 
 QSet<int> MatrixField::neighborValues(int x, int y) {
-	if (at(x, y) != vertexPoint) {
+	if (at(x, y) != kVertexPoint) {
 		return QSet<int>();
 	}
 
@@ -48,6 +48,20 @@ QSet<int> MatrixField::neighborValues(int x, int y) {
 
 void MatrixField::floodFill(int value, int x, int y) {
 	int oldValue = at(x, y);
+
+	if (oldValue == kVertexPoint) {
+		for (int i = -1; i <= 1; i++) {
+			for (int j = -1; j <= 1; j++) {
+				oldValue = at(x + j, y + i);
+
+				if (isValue(oldValue)) {
+					x = x + j;
+					y + y + i;
+					break;
+				}
+			}
+		}
+	}
 
 	if (oldValue == value) {
 		return;
@@ -103,7 +117,7 @@ void MatrixField::print() const {
 }
 
 bool MatrixField::isValue(int value) const {
-	return (value != vertexPoint && value != borderPoint);
+	return (value != kVertexPoint && value != kBorderPoint);
 }
 
 bool MatrixField::isCorrectPoint(int x, int y) const {

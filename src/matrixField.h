@@ -11,8 +11,8 @@
 
 namespace sprouts {
 
-const int vertexPoint = -2;
-const int borderPoint = -3;
+const int kVertexPoint = -2;
+const int kBorderPoint = -3;
 
 class MatrixField {
 public:

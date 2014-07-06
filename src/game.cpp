@@ -10,29 +10,37 @@
 
 namespace sprouts {
 
-const int standardNumberOfEdges = 3;
+const int kStandardNumberOfEdges = 3;
 
 Game::Game(int width, int height, const QVector<QPoint> &pointList) :
 	mField(width, height),
-	mGraph(pointList.size(), standardNumberOfEdges),
+	mGraph(pointList.size(), kStandardNumberOfEdges),
 	mPoints(pointList),
 	mFaces(1),
 	mLastValue(0)
 {
 	for (int i = 0; i < pointList.size(); i++) {
 		QPoint temp = pointList.at(i);
-		mField.set(vertexPoint, temp.x(), temp.y());
+		mField.set(kVertexPoint, temp.x(), temp.y());
 	}
 }
 
-void Game::doTurn(int vertexOne, int vertexTwo, int xNew, int yNew) {
+void Game::doTurn(int vertexOne, int vertexTwo,
+				  int xNew, int yNew,
+				  const QVector<QPoint> &borderPoints) {
 	mPoints.append(QPoint(xNew, yNew));
 
 	mGraph.addVertex();
 	mGraph.addConnection(vertexOne, mGraph.lastVertex());
 	mGraph.addConnection(vertexTwo, mGraph.lastVertex());
 
-	mField.set(vertexPoint, xNew, yNew);
+	for (int i = 0; i < borderPoints.size(); i++) {
+		QPoint temp = borderPoints.at(i);
+
+		mField.set(kBorderPoint, temp.x(), temp.y());
+	}
+
+	mField.set(kVertexPoint, xNew, yNew);
 
 	if (mGraph.numberOfFaces() != mFaces) {
 		mFaces++;
