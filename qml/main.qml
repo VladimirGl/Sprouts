@@ -12,39 +12,39 @@ Window {
     height: 360
 
     Canvas {
-            id: canvas
-            anchors {
-                left: parent.left
-                right: parent.right
-                top: parent.top
-                bottom: parent.bottom
-                margins: 8
-            }
-            property real lastX
-            property real lastY
-            property color color : "#33B5E5"
+        id: canvas
+        anchors {
+            left: parent.left
+            right: parent.right
+            top: parent.top
+            bottom: parent.bottom
+            margins: 8
+        }
+        property int lastX
+        property int lastY
+        property color color : "#33B5E5"
 
-            onPaint: {
-                var ctx = getContext('2d')
-                ctx.lineWidth = 1.5
-                ctx.strokeStyle = canvas.color
-                ctx.beginPath()
-                ctx.moveTo(lastX, lastY)
-                lastX = area.mouseX
-                lastY = area.mouseY
-                ctx.lineTo(lastX, lastY)
-                ctx.stroke()
+        onPaint: {
+            var ctx = getContext('2d')
+            ctx.lineWidth = 1.5
+            ctx.strokeStyle = canvas.color
+            ctx.beginPath()
+            ctx.moveTo(lastX, lastY)
+            lastX = area.mouseX
+            lastY = area.mouseY
+            ctx.lineTo(lastX, lastY)
+            ctx.stroke()
+        }
+        MouseArea {
+            id: area
+            anchors.fill: parent
+            onPressed: {
+                canvas.lastX = mouseX
+                canvas.lastY = mouseY
             }
-            MouseArea {
-                id: area
-                anchors.fill: parent
-                onPressed: {
-                    canvas.lastX = mouseX
-                    canvas.lastY = mouseY
-                }
-                onPositionChanged: {
-                    canvas.requestPaint()
-                }
+            onPositionChanged: {
+                canvas.requestPaint()
             }
         }
+    }
 }

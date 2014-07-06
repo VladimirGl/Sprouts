@@ -6,7 +6,8 @@ SOURCES += src/main.cpp \
     src/matrixField.cpp \
     src/sproutsGraph.cpp \
     src/floodFillStack.cpp \
-    src/game.cpp
+    src/game.cpp \
+    src/sceneController.cpp
 
 RESOURCES += \
     qml.qrc
@@ -23,4 +24,5 @@ HEADERS += \
     src/matrixField.h \
     src/sproutsGraph.h \
     src/floodFillStack.h \
-    src/game.h
+    src/game.h \
+    src/sceneController.h
