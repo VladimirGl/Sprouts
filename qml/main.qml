@@ -32,6 +32,8 @@ Window {
             ctx.moveTo(lastX, lastY)
             lastX = area.mouseX
             lastY = area.mouseY
+
+            game.addPoint(lastX, lastY)
             ctx.lineTo(lastX, lastY)
             ctx.stroke()
         }
@@ -42,6 +44,10 @@ Window {
                 canvas.lastX = mouseX
                 canvas.lastY = mouseY
             }
+            onReleased: {
+                game.drawEnds(10, 10)
+            }
+
             onPositionChanged: {
                 canvas.requestPaint()
             }

@@ -6,7 +6,7 @@
 #include "src/matrixField.h"
 #include "src/sproutsGraph.h"
 
-#include "src/game.h"
+#include "src/gameLogic.h"
 
 namespace sprouts {
 

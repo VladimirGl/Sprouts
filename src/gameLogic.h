@@ -3,8 +3,8 @@
 // LICENSE file.
 // Author: Vladimir Glazachev <glazachev.vladimir@gmail.com>
 
-#ifndef GAME_H
-#define GAME_H
+#ifndef GAME_LOGIC_H
+#define GAME_LOGIC_H
 
 #include <QPoint>
 #include <QVector>
@@ -14,9 +14,9 @@ namespace sprouts {
 class MatrixField;
 class SproutsGraph;
 
-class Game {
+class GameLogic {
 public:
-	Game(int width, int height, int players,
+	GameLogic(int width, int height, int players,
 		 const QVector<QPoint> &pointList);
 
 	// connect vertexOne and vertexTwo, and add point to (xNew, yNew).
@@ -42,4 +42,4 @@ private:
 
 }  // namespace sprouts
 
-#endif  // GAME_H
+#endif  // GAME_LOGIC_H
