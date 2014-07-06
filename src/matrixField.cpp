@@ -24,6 +24,26 @@ void MatrixField::set(int value, int x, int y) {
 	mField[y * mWidth + x] = value;
 }
 
+QSet<int> MatrixField::neighborValues(int x, int y) {
+	if (at(x, y) != vertexPoint) {
+		return QSet<int>();
+	}
+
+	QSet<int> set;
+
+	for (int i = -1; i <= 1; i++) {
+		for (int j = -1; j <= 1; j++) {
+			int value = at(x + j, y + i);
+
+			if (isValue(value)) {
+				set.insert(value);
+			}
+		}
+	}
+
+	return set;
+}
+
 void MatrixField::floodFill(int value, int x, int y) {
 	int oldValue = at(x, y);
 
@@ -71,6 +91,9 @@ void MatrixField::floodFill(int value, int x, int y) {
 	}
 }
 
+bool MatrixField::isValue(int value) const {
+	return (value != vertexPoint && value != borderPoint);
+}
 
 bool MatrixField::isCorrectPoint(int x, int y) const {
 	return ((x >= 0 && x < mWidth) && (y >= 0 && y < mHeight));

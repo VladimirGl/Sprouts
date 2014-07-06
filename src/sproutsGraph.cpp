@@ -8,8 +8,7 @@
 namespace sprouts {
 
 SproutsGraph::SproutsGraph(int size, int maxEdges) :
-	mMaxEdges(maxEdges),
-	mFaces(1)
+	mMaxEdges(maxEdges)
 {
 	for (int i = 0; i < size; i++) {
 		mAdjList.append(Adjacency());
@@ -45,8 +44,8 @@ int SproutsGraph::numberOfEdjes(int vertex) const {
 	return -1;
 }
 
-QList<int> SproutsGraph::aliveVertices() const {
-	QList<int> alive;
+QVector<int> SproutsGraph::aliveVertices() const {
+	QVector<int> alive;
 
 	for (int i = 0; i < numberOfVertices(); i++) {
 		if (isAlive(i)) {

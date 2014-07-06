@@ -7,11 +7,11 @@
 #define SPROUTS_GRAPH_H
 
 #include <QBitArray>
-#include <QList>
+#include <QVector>
 
 namespace sprouts {
 
-typedef QList<int> Adjacency;
+typedef QVector<int> Adjacency;
 
 class SproutsGraph {
 public:
@@ -26,9 +26,10 @@ public:
 	int numberOfEdjes(int vertex) const;
 
 	int numberOfVertices() const { return mAdjList.size(); }
+	int lastVertex() const { return numberOfVertices() - 1; }
 
 	// returns the list of vertices, which have less then 3 edges.
-	QList<int> aliveVertices() const;
+	QVector<int> aliveVertices() const;
 
 	// compute number of faces using Euler's characteristic
 	int numberOfFaces();
@@ -40,11 +41,9 @@ protected:
 	void dfs(QBitArray &visited, int curr) const;
 
 private:
-	QList<Adjacency> mAdjList;
+	QVector<Adjacency> mAdjList;
 
 	int mMaxEdges;
-
-	int mFaces;
 };
 
 }  // namespace sprouts
