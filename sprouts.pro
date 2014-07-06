@@ -4,7 +4,8 @@ QT += qml quick core
 
 SOURCES += src/main.cpp \
     src/matrixField.cpp \
-    src/sproutsGraph.cpp
+    src/sproutsGraph.cpp \
+    src/floodFillStack.cpp
 
 RESOURCES += \
     qml.qrc
@@ -19,4 +20,5 @@ OTHER_FILES +=
 
 HEADERS += \
     src/matrixField.h \
-    src/sproutsGraph.h
+    src/sproutsGraph.h \
+    src/floodFillStack.h

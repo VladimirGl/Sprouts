@@ -17,11 +17,12 @@ class MatrixField {
 public:
 	MatrixField(int width, int height);
 
-	int at(int x, int y);
+	bool isCorrectPoint(int x, int y) const;
+
+	int at(int x, int y) const;
 	void set(int value, int x, int y);
 
-protected:
-	bool isCorrectPoint(int x, int y) const;
+	void floodFill(int value, int x, int y);
 
 private:
 	int mWidth;
