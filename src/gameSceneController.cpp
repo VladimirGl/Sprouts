@@ -3,25 +3,27 @@
 // LICENSE file.
 // Author: Vladimir Glazachev <glazachev.vladimir@gmail.com>
 
-#include "src/sceneController.h"
+#include "src/gameSceneController.h"
 
 namespace scene {
 
-SceneController::SceneController(QObject *parent) :
+GameSceneController::GameSceneController(QObject *parent) :
 	QObject(parent)
 {
 }
 
-void SceneController::addPoint(int x, int y) {
+void GameSceneController::addPoint(int x, int y) {
 	mPoints.append(QPoint(x, y));
 }
 
-void SceneController::clear() {
+void GameSceneController::clear() {
 	mPoints.clear();
 }
 
-void SceneController::drawEnds(int xNew, int yNew) {
+void GameSceneController::drawEnds(int xNew, int yNew) {
 	mNewPoint = QPoint(xNew, yNew);
+
+	emit newLineAdded(mPoints, mNewPoint);
 }
 
 }  // namespace scene

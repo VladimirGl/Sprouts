@@ -12,7 +12,7 @@ namespace sprouts {
 
 const int kStandardNumberOfEdges = 3;
 
-Game::Game(int width, int height, int players,
+GameLogic::GameLogic(int width, int height, int players,
 		   const QVector<QPoint> &pointList) :
 	mField(width, height),
 	mGraph(pointList.size(), kStandardNumberOfEdges),
@@ -28,7 +28,7 @@ Game::Game(int width, int height, int players,
 	}
 }
 
-void Game::doTurn(int vertexOne, int vertexTwo,
+void GameLogic::doTurn(int vertexOne, int vertexTwo,
 				  int xNew, int yNew,
 				  const QVector<QPoint> &borderPoints) {
 	mPoints.append(QPoint(xNew, yNew));
@@ -55,11 +55,11 @@ void Game::doTurn(int vertexOne, int vertexTwo,
 	mTurns++;
 }
 
-int Game::lastPlayer() const {
+int GameLogic::lastPlayer() const {
 	return mTurns % mPlayers;
 }
 
-bool Game::hasTurn() const {
+bool GameLogic::hasTurn() const {
 	QVector<int> alive = mGraph.aliveVertices();
 	QVector<QSet<int> > sets;
 

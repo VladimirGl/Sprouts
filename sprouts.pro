@@ -7,7 +7,8 @@ SOURCES += src/main.cpp \
     src/sproutsGraph.cpp \
     src/floodFillStack.cpp \
     src/game.cpp \
-    src/sceneController.cpp
+    src/initSceneController.cpp \
+    src/gameSceneController.cpp
 
 RESOURCES += \
     qml.qrc
@@ -25,4 +26,5 @@ HEADERS += \
     src/sproutsGraph.h \
     src/floodFillStack.h \
     src/game.h \
-    src/sceneController.h
+    src/initSceneController.h \
+    src/gameSceneController.h
