@@ -16,20 +16,25 @@ class SproutsGraph;
 
 class Game {
 public:
-	Game(int width, int height, const QVector<QPoint> &pointList);
+	Game(int width, int height, int players,
+		 const QVector<QPoint> &pointList);
 
 	// connect vertexOne and vertexTwo, and add point to (xNew, yNew).
 	void doTurn(int vertexOne, int vertexTwo,
 				int xNew, int yNew,
 				const QVector<QPoint> &borderPoints);
 
-	bool hasTurn();
+	bool hasTurn() const;
+	int lastPlayer() const;
 
 private:
 	MatrixField mField;
 	SproutsGraph mGraph;
 
 	QVector<QPoint> mPoints;
+
+	int mTurns;
+	int mPlayers;
 
 	int mFaces;
 	int mLastValue;

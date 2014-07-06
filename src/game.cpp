@@ -12,10 +12,13 @@ namespace sprouts {
 
 const int kStandardNumberOfEdges = 3;
 
-Game::Game(int width, int height, const QVector<QPoint> &pointList) :
+Game::Game(int width, int height, int players,
+		   const QVector<QPoint> &pointList) :
 	mField(width, height),
 	mGraph(pointList.size(), kStandardNumberOfEdges),
 	mPoints(pointList),
+	mTurns(0),
+	mPlayers(players),
 	mFaces(1),
 	mLastValue(0)
 {
@@ -48,9 +51,15 @@ void Game::doTurn(int vertexOne, int vertexTwo,
 		mLastValue++;
 		mField.floodFill(mLastValue, xNew, yNew);
 	}
+
+	mTurns++;
 }
 
-bool Game::hasTurn() {
+int Game::lastPlayer() const {
+	return mTurns % mPlayers;
+}
+
+bool Game::hasTurn() const {
 	QVector<int> alive = mGraph.aliveVertices();
 	QVector<QSet<int> > sets;
 

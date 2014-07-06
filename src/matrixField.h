@@ -23,7 +23,7 @@ public:
 	int at(int x, int y) const;
 	void set(int value, int x, int y);
 
-	QSet<int> neighborValues(int x, int y);
+	QSet<int> neighborValues(int x, int y) const;
 
 	// for more info see http://lodev.org/cgtutor/floodfill.html
 	void floodFill(int value, int x, int y);

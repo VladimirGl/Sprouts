@@ -26,7 +26,7 @@ void MatrixField::set(int value, int x, int y) {
 	mField[y * mWidth + x] = value;
 }
 
-QSet<int> MatrixField::neighborValues(int x, int y) {
+QSet<int> MatrixField::neighborValues(int x, int y) const {
 	if (at(x, y) != kVertexPoint) {
 		return QSet<int>();
 	}
@@ -56,7 +56,7 @@ void MatrixField::floodFill(int value, int x, int y) {
 
 				if (isValue(oldValue)) {
 					x = x + j;
-					y + y + i;
+					y = y + i;
 					break;
 				}
 			}
