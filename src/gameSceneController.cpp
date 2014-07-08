@@ -15,7 +15,7 @@ GameSceneController::GameSceneController(QObject *parent) :
 }
 
 void GameSceneController::addPoint(int x, int y) {
-	qDebug() << mPoints.length() << "\n";
+//	qDebug() << QPoint(x, y) << "\n";
 
 	mPoints.append(QPoint(x, y));
 }
@@ -27,11 +27,34 @@ void GameSceneController::clear() {
 void GameSceneController::drawEnds(int xNew, int yNew) {
 	qDebug() << "finishDraw\n";
 
-	mNewPoint = QPoint(xNew, yNew);
+	mNewPoint = nearestPoint(xNew, yNew);
 
 	emit newLineAdded(mPoints, mNewPoint);
+}
 
+QPoint GameSceneController::nearestPoint(int xNew, int yNew) const {
+	QPoint newPoint(xNew, yNew);
+	QPoint nearestP = mPoints.first();
 
+	int minDist = distance(newPoint, nearestP);
+
+	for (int i = 1; i < mPoints.size(); i++) {
+		QPoint temp = mPoints.at(i);
+		int dist = distance(temp, newPoint);
+
+		if (dist < minDist) {
+			nearestP = temp;
+			minDist = dist;
+		}
+	}
+
+	return nearestP;
+}
+
+int GameSceneController::distance(const QPoint &p1, const QPoint &p2) const {
+	QPoint temp = p1 - p2;
+
+	return (temp.x() * temp.x() + temp.y() * temp.y());
 }
 
 }  // namespace scene

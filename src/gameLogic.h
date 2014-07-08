@@ -27,6 +27,9 @@ public:
 	bool hasTurn() const;
 	int lastPlayer() const;
 
+protected:
+	void fillLine(const QPoint &p1, const QPoint &p2);
+
 private:
 	MatrixField mField;
 	SproutsGraph mGraph;

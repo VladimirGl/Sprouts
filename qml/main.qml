@@ -11,12 +11,34 @@ Window {
     width: 360
     height: 360
 
+    property int numberOfPoints : 0
+
+    Loader { id: pageLoader }
+
+    Rectangle {
+        id: rectaa
+
+        color: "black"
+
+        width: parent.width
+        height: 40
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: {
+                pageLoader.source = "qrc:///qml/Seed.qml"
+            }
+        }
+    }
+
     Canvas {
+        z : -1
+
         id: canvas
         anchors {
             left: parent.left
             right: parent.right
-            top: parent.top
+            top: rectaa.bottom
             bottom: parent.bottom
             margins: 8
         }
@@ -41,15 +63,31 @@ Window {
             id: area
             anchors.fill: parent
             onPressed: {
+                if (numberOfPoints == 3) {
+
                 canvas.lastX = mouseX
                 canvas.lastY = mouseY
+
+                } else {
+
+                var component = Qt.createComponent("qrc:///qml/Seed.qml")
+                var button = component.createObject(parent)
+
+                button.x = mouseX - button.width / 2
+                button.y = mouseY - button.height / 2
+                button.pointNumber = numberOfPoints
+                numberOfPoints++
+                }
+
             }
             onReleased: {
                 game.drawEnds(10, 10)
             }
 
             onPositionChanged: {
+                if (numberOfPoints == 3) {
                 canvas.requestPaint()
+                }
             }
         }
     }
