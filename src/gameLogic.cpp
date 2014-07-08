@@ -37,10 +37,11 @@ void GameLogic::doTurn(int vertexOne, int vertexTwo,
 	mGraph.addConnection(vertexOne, mGraph.lastVertex());
 	mGraph.addConnection(vertexTwo, mGraph.lastVertex());
 
-	for (int i = 0; i < borderPoints.size(); i++) {
-		QPoint temp = borderPoints.at(i);
+	for (int i = 1; i < borderPoints.size(); i++) {
+		QPoint p1 = borderPoints.at(i - 1);
+		QPoint p2 = borderPoints.at(i);
 
-		mField.set(kBorderPoint, temp.x(), temp.y());
+		fillLine(p1, p2);
 	}
 
 	mField.set(kVertexPoint, xNew, yNew);
@@ -60,35 +61,35 @@ int GameLogic::lastPlayer() const {
 }
 
 void GameLogic::fillLine(const QPoint &p1, const QPoint &p2) {
-	int x0 = p1.x();
-	int y0 = p1.y();
-	int x1 = p2.x();
-	int y1 = p2.y();
+	int x1 = p1.x();
+	int y1 = p1.y();
+	int x2 = p2.x();
+	int y2 = p2.y();
 
-	int dx = abs(x0 - x1);
-	int dy = abs(y0 - y1);
+	int dx = abs(x1 - x2);
+	int dy = abs(y1 - y2);
 
 	int sx = 1;
 	int sy = 1;
-	if (x0 > x1) { sx = -1; }
-	if (y0 > y1) { sy = -1; }
+	if (x1 > x2) { sx = -1; }
+	if (y1 > y2) { sy = -1; }
 
 	int error = dx - dy;
 
 	while (true) {
-		mField.set(kBorderPoint, x0, y0);
-		if ((x0 == x1) && (y0 == y1)) {
+		mField.set(kBorderPoint, x1, y1);
+		if ((x1 == x2) && (y1 == y2)) {
 			return;
 		}
 
 		int e2 = error * 2;
 		if (e2 > -dy) {
 			error -= dy;
-			x0 += sx;
+			x1 += sx;
 		}
 		if (e2 < dx) {
 			error += dx;
-			y0 += sy;
+			y1 += sy;
 		}
 	}
 }

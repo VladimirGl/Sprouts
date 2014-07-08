@@ -27,6 +27,7 @@ public slots:
 	void addPoint(int x, int y);
 	void clear();
 
+	void drawStarts(int xNew, int yNew);
 	void drawEnds(int xNew, int yNew);
 
 protected:

@@ -17,6 +17,8 @@ GameSceneController::GameSceneController(QObject *parent) :
 void GameSceneController::addPoint(int x, int y) {
 //	qDebug() << QPoint(x, y) << "\n";
 
+//	qDebug() << "canva";
+
 	mPoints.append(QPoint(x, y));
 }
 
@@ -24,8 +26,12 @@ void GameSceneController::clear() {
 	mPoints.clear();
 }
 
+void GameSceneController::drawStarts(int xNew, int yNew) {
+	qDebug() << yNew << "\n";
+}
+
 void GameSceneController::drawEnds(int xNew, int yNew) {
-	qDebug() << "finishDraw\n";
+	qDebug() << yNew << "\n";
 
 	mNewPoint = nearestPoint(xNew, yNew);
 

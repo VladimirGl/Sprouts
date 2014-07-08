@@ -26,10 +26,11 @@ Window {
         MouseArea {
             anchors.fill: parent
             onClicked: {
-                pageLoader.source = "qrc:///qml/Seed.qml"
+
             }
         }
     }
+
 
     Canvas {
         z : -1
@@ -46,6 +47,8 @@ Window {
         property int lastY
         property color color : "#33B5E5"
 
+
+
         onPaint: {
             var ctx = getContext('2d')
             ctx.lineWidth = 1.5
@@ -59,14 +62,21 @@ Window {
             ctx.lineTo(lastX, lastY)
             ctx.stroke()
         }
+
         MouseArea {
             id: area
             anchors.fill: parent
             onPressed: {
                 if (numberOfPoints == 3) {
 
+                    if (parent.childAt(mouseX, mouseY).z == 1) {
+                        game.drawStarts(2, parent.childAt(mouseX, mouseY).pointNumber)
+                    }
+
                 canvas.lastX = mouseX
                 canvas.lastY = mouseY
+
+
 
                 } else {
 
@@ -76,12 +86,19 @@ Window {
                 button.x = mouseX - button.width / 2
                 button.y = mouseY - button.height / 2
                 button.pointNumber = numberOfPoints
-                numberOfPoints++
+
                 }
 
             }
             onReleased: {
-                game.drawEnds(10, 10)
+                if (numberOfPoints == 3) {
+
+                    if (parent.childAt(mouseX, mouseY).z == 1) {
+                        game.drawEnds(2, parent.childAt(mouseX, mouseY).pointNumber)
+                    }
+                } else {
+                    numberOfPoints++
+                }
             }
 
             onPositionChanged: {

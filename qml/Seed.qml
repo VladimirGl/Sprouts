@@ -3,6 +3,8 @@ import QtQuick 2.0
 Rectangle {
     id : point
 
+    z : 1
+
      width: 20
      height: width
      color: "#1ee422"
@@ -10,22 +12,18 @@ Rectangle {
      border.width: 1
      radius: width * 0.5
 
-     property int pointNumber
+     property int pointNumber : 0
 
 //     MouseArea {
 //         id: area
 //         anchors.fill: parent
 //         onPressed: {
-//             canvas.lastX = parent.width / 2
-//             canvas.lastY = parent.height / 2
-//         }
-//         onReleased: {
-//             if (contains(Qt.point(mouseX, mouseY))) {
-//                game.drawEnds(10, 10) }
+//            game.drawStarts(parent.parent.z, parent.parent.z)
 //         }
 
-//         onPositionChanged: {
-//             canvas.requestPaint()
+//         onReleased: {
+//             game.drawStarts(parent.y, parent.y)
 //         }
+
 //     }
 }
