@@ -25,6 +25,9 @@ public:
 
 	QSet<int> neighborValues(int x, int y) const;
 
+	int width() { return mWidth; }
+	int height() { return mHeight; }
+
 	// for more info see http://lodev.org/cgtutor/floodfill.html
 	void floodFill(int value, int x, int y);
 

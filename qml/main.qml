@@ -16,18 +16,33 @@ import QtQuick.Window 2.1
     5 - line draw ends
     6 - set new point
     7 - game ends
+    8 - waitTurn
 */
 
 Window {
+    width: 640
+    height: 960
+
     id: field
 
     visible: true
-    width: 360
-    height: 360
 
     property int numberOfPoints: 0
 
     property int state: 0
+
+    Connections {
+        target: game
+        onTurnEndss: {
+            if (!game.turnResult()) {
+                canvas.undo()
+            }
+            field.setState(3)
+//            console.log(field.state)
+            game.clear()
+        }
+    }
+
 
     function setState(newState) {
         state = newState
@@ -57,6 +72,8 @@ Window {
             break
         case 7:
             break
+        case 8:
+            break
         }
     }
 
@@ -66,7 +83,7 @@ Window {
         color: "black"
 
         width: parent.width
-        height: 40
+        height: 20
 
         MouseArea {
             anchors.fill: parent
@@ -75,6 +92,7 @@ Window {
                     field.setState(1)
                 } else {
                     field.setState(3)
+                    game.startGame(canvas.width, canvas.height)
                 }
             }
         }
@@ -82,6 +100,9 @@ Window {
 
     Canvas {
         z : -1
+
+        width: parent.width
+        height: parent.height - rect.height
 
         id: canvas
         anchors {
@@ -101,7 +122,8 @@ Window {
 
         property color backgroundColor: "#ffffff"
 
-        property var lastVertex
+        property var firstVertex
+        property var secondVertex
         property var lastView
         property bool isImageDrawed: false
 
@@ -128,38 +150,40 @@ Window {
         }
 
         function undo() {
-            lastVertex.incrLives()
+            firstVertex.incrLives()
+//            console.log(field.state)
+            if (field.state == 8) {
+                secondVertex.incrLives()
+                children[children.length - 1].destroy()
+            }
+
             isImageDrawed = false
-            console.log("pshh")
             loadImage(lastView)
             imageLoaded()
             game.clear()
-
-            console.log("undoend")
         }
 
         function createPoint(x, y) {
             var component = Qt.createComponent("qrc:///qml/Seed.qml")
-            var button = component.createObject(canvas)
+            var seed = component.createObject(canvas)
 
-            button.x = x - button.width / 2
-            button.y = y - button.height / 2
-            button.pointNumber = field.numberOfPoints
+            seed.width = Math.round(canvas.width / 20)
 
-            return button
+            seed.x = Math.round(x - seed.width / 2)
+            seed.y = Math.round(y - seed.height / 2)
+            seed.pointNumber = field.numberOfPoints
+
+            return seed
         }
 
         function addInitPoint(x, y) {
-            console.log("add init point")
-
             createPoint(x, y)
+            game.addInitialPoint(x, y)
 
             field.numberOfPoints++
         }
 
         function addPoint(x, y) {
-            console.log("add new point")
-
             var button = createPoint(x, y)
             button.decrLives()
             button.decrLives()
@@ -204,7 +228,8 @@ Window {
 
 //            ctx.clearRect(0, 0, 300, 300)
             ctx.lineWidth = 2
-            ctx.strokeStyle = "#33B5E5"
+//            ctx.strokeStyle = "#33B5E5"
+            ctx.strokeStyle = "black"
             ctx.beginPath()
             ctx.moveTo(lastX, lastY)
 
@@ -215,7 +240,7 @@ Window {
             lastX = newX
             lastY = newY
 
-            game.addPoint(lastX, lastY)
+            game.addPoint(Math.round(lastX), Math.round(lastY))
             ctx.lineTo(lastX, lastY)
             ctx.stroke()
 
@@ -223,35 +248,28 @@ Window {
         }
 
         onImageLoaded: {
-//            console.log("imgg")
-
             requestPaint()
-
-//            var ctx = getContext('2d')
-//            ctx.beginPath()
-
-//            ctx.clearRect(0, 0, width, height)
-//            ctx.drawImage(lastView, 0, 0)
-
-//            ctx.closePath()
-
-//            console.log("imageloaded")
         }
 
         MouseArea {
             id: area
             anchors.fill: parent
 
+            property var visitedVertex
+            property int visited: 0
+
             onPressed: {
+//                console.log(field.state)
+
                 switch (field.state) {
                 case 2:
-                    console.log("state 2")
-                    parent.addInitPoint(mouseX, mouseY)
+//                    console.log(mouseX, mouseY)
+                    parent.addInitPoint(Math.round(mouseX), Math.round(mouseY))
                     break
                 case 3:
                     var ch = parent.childAt(mouseX, mouseY)
 
-                    if (ch.z != 1) {
+                    if (ch.z != 2) {
                         break
                     }
 
@@ -259,54 +277,64 @@ Window {
                         break
                     }
 
-                    console.log("line start")
                     canvas.lastView = canvas.toDataURL()
 
                     game.drawStarts(2, ch.pointNumber)
                     ch.decrLives()
 
-                    canvas.lastX = ch.x + ch.width / 2
-                    canvas.lastY = ch.y + ch.height / 2
+                    canvas.lastX = Math.round(ch.x + ch.width / 2)
+                    canvas.lastY = Math.round(ch.y + ch.height / 2)
+//                    console.log(canvas.lastX, canvas.lastY)
 
-                    canvas.lastVertex = ch
+                    game.addPoint(Math.round(canvas.lastX), Math.round(canvas.lastY))
+
+                    visitedVertex = ch
+                    canvas.firstVertex = ch
 
                     field.setState(4)
                     break
                 case 6:
                     var point = game.nearestPoint(mouseX, mouseY)
+                    field.setState(8)
                     parent.addPoint(point.x, point.y)
 
-                    game.clear()
-                    field.setState(3)
+                    game.addVertex(point.x, point.y)
                 }
             }
 
             onReleased: {
-                console.log(field.state)
 
                 if (field.state == 4) {
-                    if (parent.childAt(mouseX, mouseY).z == 1) {
-                        console.log("finish")
+                    if (parent.childAt(mouseX, mouseY).z == 2) {
 
                         var ch = parent.childAt(mouseX, mouseY)
 
                         if (!ch.isAlive()) {
-                            console.log("bad finish")
                             canvas.undo()
                             field.setState(3)
                             return
                         }
 
-                        canvas.newX = ch.x + ch.width / 2
-                        canvas.newY = ch.y + ch.height / 2
+                        if ((visited != 1) && (ch != canvas.firstVertex && visited != 2)) {
+                        }
+
+                        visited = 0
+
+                        canvas.newX = Math.round(ch.x + ch.width / 2)
+                        canvas.newY = Math.round(ch.y + ch.height / 2)
+//                        console.log(canvas.newX, canvas.newY)
+
+
+                        game.addPoint(canvas.newX, canvas.newY)
 
                         field.setState(5)
                         canvas.requestPaint()
+                        canvas.secondVertex = ch
 
-                        game.drawEnds(2, ch.pointNumber)
+                        game.drawEnds(ch.pointNumber, canvas.firstVertex.pointNumber)
                         ch.decrLives()
+                        ch.unselect()
                     } else {
-                        console.log("bad finish")
                         canvas.undo()
                         field.setState(3)
                     }
@@ -317,14 +345,23 @@ Window {
                 if (field.state == 4) {
                     var ch = parent.childAt(mouseX, mouseY)
 
-                    if (ch.z == 1) {
+                    if (ch.z == 2) {
+                        if (ch != canvas.firstVertex && ch != visitedVertex) {
+                            visitedVertex.unselect()
+                            ch.select()
+                            visited++
+                            visitedVertex = ch
+                        }
+
                         return
                     }
 
+                    visitedVertex.unselect()
+
                     canvas.requestPaint()
 
-                    canvas.newX = mouseX
-                    canvas.newY = mouseY
+                    canvas.newX = Math.round(mouseX)
+                    canvas.newY = Math.round(mouseY)
                 }
             }
         }

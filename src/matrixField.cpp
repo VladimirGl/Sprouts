@@ -4,6 +4,8 @@
 // Author: Vladimir Glazachev <glazachev.vladimir@gmail.com>
 
 #include <QDebug>
+#include <iostream>
+#include <fstream>
 
 #include "src/floodFillStack.h"
 
@@ -28,6 +30,8 @@ void MatrixField::set(int value, int x, int y) {
 
 QSet<int> MatrixField::neighborValues(int x, int y) const {
 	if (at(x, y) != kVertexPoint) {
+		qDebug() << x << " " << y;
+		qDebug() << "not vertex";
 		return QSet<int>();
 	}
 
@@ -47,25 +51,34 @@ QSet<int> MatrixField::neighborValues(int x, int y) const {
 }
 
 void MatrixField::floodFill(int value, int x, int y) {
+//	qDebug() << "fill";
+
 	int oldValue = at(x, y);
+//	qDebug() << "old:" << oldValue;
+
+//	qDebug() << x << "  " << y;
 
 	if (oldValue == kVertexPoint) {
 		for (int i = -1; i <= 1; i++) {
 			for (int j = -1; j <= 1; j++) {
 				oldValue = at(x + j, y + i);
 
+//				qDebug() << i << " " << j << " " << oldValue;
 				if (isValue(oldValue)) {
 					x = x + j;
 					y = y + i;
 					break;
 				}
 			}
+			if (isValue(oldValue)) {
+				break;
+			}
 		}
 	}
 
-	if (oldValue == value) {
-		return;
-	}
+//	qDebug() << "new:" << oldValue;
+
+//	qDebug() << x << "  " << y;
 
 	int x1;
 
@@ -116,12 +129,16 @@ void MatrixField::undo() {
 }
 
 void MatrixField::print() const {
+	std::ofstream mfile;
+	mfile.open("D:/matr.csv");
+
 	for (int i = 0; i < mHeight; i++) {
 		for (int j = 0; j < mWidth; j++) {
-			qDebug() << at(j, i) << " ";
+			mfile << at(j, i) << ",";
 		}
-		qDebug() << "\n";
+		mfile << "\n";
 	}
+	mfile.close();
 }
 
 bool MatrixField::isValue(int value) const {

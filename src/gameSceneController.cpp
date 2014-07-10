@@ -18,6 +18,20 @@ GameSceneController::GameSceneController(QObject *parent) :
 {
 }
 
+void GameSceneController::turnEnds(bool turn) {
+	mTurn = turn;
+
+	emit turnEndss();
+}
+
+void GameSceneController::addInitialPoint(int x, int y) {
+	mInitPoints.append(QPoint(x, y));
+}
+
+void GameSceneController::startGame(int width, int height) {
+	emit gameStarts(width, height, mInitPoints);
+}
+
 void GameSceneController::addPoint(int x, int y) {
 //	qDebug() << QPoint(x, y) << "\n";
 
@@ -31,15 +45,16 @@ void GameSceneController::clear() {
 }
 
 void GameSceneController::drawStarts(int xNew, int yNew) {
-	qDebug() << yNew << "\n";
+//	clear();
 }
 
-void GameSceneController::drawEnds(int xNew, int yNew) {
-	qDebug() << yNew << "\n";
+void GameSceneController::addVertex(int xNew, int yNew) {
+	emit newLineAdded(mVertexOne, mVertexTwo, mPoints, QPoint(xNew, yNew));
+}
 
-	mNewPoint = nearestPoint(xNew, yNew);
-
-//	emit newLineAdded(mPoints, mNewPoint);
+void GameSceneController::drawEnds(int vertexOne, int vertexTwo) {
+	mVertexOne = vertexOne;
+	mVertexTwo = vertexTwo;
 }
 
 QPoint GameSceneController::nearestPoint(int xNew, int yNew) const {
@@ -51,7 +66,7 @@ QPoint GameSceneController::nearestPoint(int xNew, int yNew) const {
 	QPoint nearestP = mPoints.first();
 
 	bool isSet = false;
-	int turnDist = mMinDistance;
+	int turnDist = distance(mPoints.first(), mPoints.last()) * 0.2;
 
 	int minDist = distance(newPoint, nearestP);
 

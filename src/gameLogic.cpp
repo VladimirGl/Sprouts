@@ -3,10 +3,9 @@
 // LICENSE file.
 // Author: Vladimir Glazachev <glazachev.vladimir@gmail.com>
 
-#include "src/matrixField.h"
-#include "src/sproutsGraph.h"
-
 #include "src/gameLogic.h"
+
+#include <QDebug>
 
 namespace sprouts {
 
@@ -27,6 +26,8 @@ GameLogic::GameLogic(int width, int height, int players,
 		QPoint temp = pointList.at(i);
 		mField.set(kVertexPoint, temp.x(), temp.y());
 	}
+
+	mField.update();
 }
 
 bool GameLogic::doTurn(int vertexOne, int vertexTwo,
@@ -34,30 +35,49 @@ bool GameLogic::doTurn(int vertexOne, int vertexTwo,
 				  const QVector<QPoint> &borderPoints) {
 	mPoints.append(QPoint(xNew, yNew));
 
-	mGraph.addVertex();
-	mGraph.addConnection(vertexOne, mGraph.lastVertex());
-	mGraph.addConnection(vertexTwo, mGraph.lastVertex());
-
 	for (int i = 1; i < borderPoints.size(); i++) {
 		QPoint p1 = borderPoints.at(i - 1);
 		QPoint p2 = borderPoints.at(i);
 
-		fillLine(p1, p2);
+		bool isCheckedIntersect = true;
+		fillLine(p1, p2, isCheckedIntersect);
 
 		if (mIsIntersect) {
-			mField.undo();
 			mIsIntersect = false;
+			mField.undo();
+			mPoints.removeLast();
 			return false;
 		}
 	}
 
+	QPoint p1 = borderPoints.first();
+	QPoint p2 = borderPoints.last();
+	if (p1 == p2) {
+		fillLine(p1, p2, false);
+	}
+	if (mIsIntersect) {
+		mIsIntersect = false;
+		mField.undo();
+		mPoints.removeLast();
+		return false;
+	}
+
+	mField.set(kVertexPoint, p1.x(), p1.y());
+	mField.set(kVertexPoint, p2.x(), p2.y());
 	mField.set(kVertexPoint, xNew, yNew);
 
+	mGraph.addVertex();
+	mGraph.addConnection(vertexOne, mGraph.lastVertex());
+	mGraph.addConnection(vertexTwo, mGraph.lastVertex());
+
 	if (mGraph.numberOfFaces() != mFaces) {
+		qDebug() << "faces up";
+
 		mFaces++;
 
 		mLastValue++;
 		mField.floodFill(mLastValue, xNew, yNew);
+		mField.print();
 	}
 
 	mTurns++;
@@ -70,7 +90,7 @@ int GameLogic::lastPlayer() const {
 	return mTurns % mPlayers;
 }
 
-void GameLogic::fillLine(const QPoint &p1, const QPoint &p2) {
+void GameLogic::fillLine(const QPoint &p1, const QPoint &p2, bool isCheckIntersect) {
 	int x1 = p1.x();
 	int y1 = p1.y();
 	int x2 = p2.x();
@@ -86,34 +106,44 @@ void GameLogic::fillLine(const QPoint &p1, const QPoint &p2) {
 
 	int error = dx - dy;
 
+	int x1temp = x1;
+	int y1temp = y1;
+
 	while (true) {
-		if (mField.at(x1, y1) == kBorderPoint) {
+		if (mField.at(x1temp, y1temp) == kBorderPoint
+			&& (x1temp != x1 && y1temp != y1)
+			&& (x1temp != x2 && y1temp != y2)) {
+
 			mIsIntersect = true;
 			return;
 		}
-		mField.set(kBorderPoint, x1, y1);
-		if ((x1 == x2) && (y1 == y2)) {
+
+		mField.set(kBorderPoint, x1temp, y1temp);
+		if ((x1temp == x2) && (y1temp == y2)) {
 			return;
 		}
 
 		int e2 = error * 2;
 		if (e2 > -dy) {
 			error -= dy;
-			x1 += sx;
+			x1temp += sx;
 		}
 		if (e2 < dx) {
 			error += dx;
-			y1 += sy;
+			y1temp += sy;
 		}
 	}
 }
 
 bool GameLogic::hasTurn() const {
 	QVector<int> alive = mGraph.aliveVertices();
+
 	QVector<QSet<int> > sets;
 
 	for (int i = 0; i < alive.size(); i++) {
 		QPoint temp = mPoints.at(alive.at(i));
+
+		qDebug() << alive.at(i) << " " << mField.neighborValues(temp.x(), temp.y());
 
 		sets.append(mField.neighborValues(temp.x(), temp.y()));
 	}

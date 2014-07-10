@@ -2,13 +2,13 @@ import QtQuick 2.0
 
 Rectangle {
     id : point
-    z : 1
+    z : 2
 
     width: 10
     height: width
     color: colors[lives]
     border.color: "black"
-    border.width: 1
+    border.width: 0.5
     radius: width * 0.5
 
     property int pointNumber: 0
@@ -23,6 +23,14 @@ Rectangle {
         if (lives > 0) {
             lives--
         }
+    }
+
+    function select() {
+        border.width = 2
+    }
+
+    function unselect() {
+        border.width = 0.5
     }
 
     function incrLives() {

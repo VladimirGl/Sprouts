@@ -6,13 +6,13 @@
 #ifndef GAME_LOGIC_H
 #define GAME_LOGIC_H
 
+#include "src/matrixField.h"
+#include "src/sproutsGraph.h"
+
 #include <QPoint>
 #include <QVector>
 
 namespace sprouts {
-
-class MatrixField;
-class SproutsGraph;
 
 class GameLogic {
 public:
@@ -28,7 +28,7 @@ public:
 	int lastPlayer() const;
 
 protected:
-	void fillLine(const QPoint &p1, const QPoint &p2);
+	void fillLine(const QPoint &p1, const QPoint &p2, bool isCheckIntersect);
 
 private:
 	MatrixField mField;

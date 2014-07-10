@@ -8,7 +8,8 @@ SOURCES += src/main.cpp \
     src/floodFillStack.cpp \
     src/initSceneController.cpp \
     src/gameSceneController.cpp \
-    src/gameLogic.cpp
+    src/gameLogic.cpp \
+    src/gameLogicController.cpp
 
 RESOURCES += \
     qml.qrc
@@ -27,4 +28,5 @@ HEADERS += \
     src/floodFillStack.h \
     src/initSceneController.h \
     src/gameSceneController.h \
-    src/gameLogic.h
+    src/gameLogic.h \
+    src/gameLogicController.h

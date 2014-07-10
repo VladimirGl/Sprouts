@@ -11,6 +11,10 @@
 #include <QQmlApplicationEngine>
 
 #include "src/gameSceneController.h"
+#include "src/gameLogicController.h"
+
+#include <QVector>
+#include <QPoint>
 
 int main(int argc, char *argv[]) {
 	QGuiApplication app(argc, argv);
@@ -19,8 +23,19 @@ int main(int argc, char *argv[]) {
 
 	scene::GameSceneController controller;
 
+	sprouts::GameLogicController gameController;
+
 //	engine.rootContext()->setContextProperty("game", &controller);
 
+	QObject::connect(&controller, SIGNAL(gameStarts(int, int, QVector<QPoint>)),
+					 &gameController, SLOT(init(int, int, QVector<QPoint>)));
+
+	QObject::connect(&controller, SIGNAL(newLineAdded(int,int,QVector<QPoint>,QPoint)),
+					 &gameController, SLOT(doTurn(int,int,QVector<QPoint>,QPoint)));
+
+
+	QObject::connect(&gameController, SIGNAL(turnEnds(bool)),
+					 &controller, SLOT(turnEnds(bool)));
 
 	QQmlApplicationEngine engine;
 	engine.rootContext()->setContextProperty("game", &controller);
