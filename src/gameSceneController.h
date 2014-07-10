@@ -30,8 +30,10 @@ public slots:
 	void drawStarts(int xNew, int yNew);
 	void drawEnds(int xNew, int yNew);
 
-protected:
 	QPoint nearestPoint(int xNew, int yNew) const;
+
+protected:
+
 	int distance(const QPoint &p1, const QPoint &p2) const;
 
 private:

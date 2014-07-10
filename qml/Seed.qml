@@ -2,28 +2,26 @@ import QtQuick 2.0
 
 Rectangle {
     id : point
-
     z : 1
 
-     width: 20
-     height: width
-     color: "#1ee422"
-     border.color: "black"
-     border.width: 1
-     radius: width * 0.5
+    width: 20
+    height: width
+    color: colors[lives]
+    border.color: "black"
+    border.width: 1
+    radius: width * 0.5
 
-     property int pointNumber : 0
+    property int pointNumber: 0
+    property int lives: 3
+    property variant colors: ["#000000", "#f7070b", "#1ee422", "#1ee422"]
 
-//     MouseArea {
-//         id: area
-//         anchors.fill: parent
-//         onPressed: {
-//            game.drawStarts(parent.parent.z, parent.parent.z)
-//         }
+    function isAlive() {
+        return (lives > 0)
+    }
 
-//         onReleased: {
-//             game.drawStarts(parent.y, parent.y)
-//         }
-
-//     }
+    function decrLives() {
+        if (lives > 0) {
+            lives--
+        }
+    }
 }

@@ -10,7 +10,8 @@
 namespace scene {
 
 GameSceneController::GameSceneController(QObject *parent) :
-	QObject(parent)
+	QObject(parent),
+	mPoints()
 {
 }
 
@@ -35,10 +36,14 @@ void GameSceneController::drawEnds(int xNew, int yNew) {
 
 	mNewPoint = nearestPoint(xNew, yNew);
 
-	emit newLineAdded(mPoints, mNewPoint);
+//	emit newLineAdded(mPoints, mNewPoint);
 }
 
 QPoint GameSceneController::nearestPoint(int xNew, int yNew) const {
+	if (mPoints.isEmpty()) {
+		return QPoint();
+	}
+
 	QPoint newPoint(xNew, yNew);
 	QPoint nearestP = mPoints.first();
 
