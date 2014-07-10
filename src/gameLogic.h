@@ -20,7 +20,7 @@ public:
 		 const QVector<QPoint> &pointList);
 
 	// connect vertexOne and vertexTwo, and add point to (xNew, yNew).
-	void doTurn(int vertexOne, int vertexTwo,
+	bool doTurn(int vertexOne, int vertexTwo,
 				int xNew, int yNew,
 				const QVector<QPoint> &borderPoints);
 
@@ -41,6 +41,8 @@ private:
 
 	int mFaces;
 	int mLastValue;
+
+	bool mIsIntersect;
 };
 
 }  // namespace sprouts

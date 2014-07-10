@@ -4,7 +4,7 @@ Rectangle {
     id : point
     z : 1
 
-    width: 20
+    width: 10
     height: width
     color: colors[lives]
     border.color: "black"
@@ -22,6 +22,12 @@ Rectangle {
     function decrLives() {
         if (lives > 0) {
             lives--
+        }
+    }
+
+    function incrLives() {
+        if (lives < 3) {
+            lives++
         }
     }
 }

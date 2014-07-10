@@ -9,9 +9,12 @@
 
 namespace scene {
 
+const int kMinDistance = 400;
+
 GameSceneController::GameSceneController(QObject *parent) :
 	QObject(parent),
-	mPoints()
+	mPoints(),
+	mMinDistance(kMinDistance)
 {
 }
 
@@ -47,15 +50,28 @@ QPoint GameSceneController::nearestPoint(int xNew, int yNew) const {
 	QPoint newPoint(xNew, yNew);
 	QPoint nearestP = mPoints.first();
 
+	bool isSet = false;
+	int turnDist = mMinDistance;
+
 	int minDist = distance(newPoint, nearestP);
 
 	for (int i = 1; i < mPoints.size(); i++) {
 		QPoint temp = mPoints.at(i);
-		int dist = distance(temp, newPoint);
 
-		if (dist < minDist) {
-			nearestP = temp;
-			minDist = dist;
+		if (distance(mPoints.first(), temp) > turnDist &&
+			distance(mPoints.last(), temp) > turnDist) {
+			int dist = distance(temp, newPoint);
+
+			if (!isSet) {
+				minDist = dist;
+				nearestP = temp;
+				isSet = true;
+			}
+
+			if (dist < minDist) {
+				nearestP = temp;
+				minDist = dist;
+			}
 		}
 	}
 

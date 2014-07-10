@@ -20,7 +20,8 @@ GameLogic::GameLogic(int width, int height, int players,
 	mTurns(0),
 	mPlayers(players),
 	mFaces(1),
-	mLastValue(0)
+	mLastValue(0),
+	mIsIntersect(false)
 {
 	for (int i = 0; i < pointList.size(); i++) {
 		QPoint temp = pointList.at(i);
@@ -28,7 +29,7 @@ GameLogic::GameLogic(int width, int height, int players,
 	}
 }
 
-void GameLogic::doTurn(int vertexOne, int vertexTwo,
+bool GameLogic::doTurn(int vertexOne, int vertexTwo,
 				  int xNew, int yNew,
 				  const QVector<QPoint> &borderPoints) {
 	mPoints.append(QPoint(xNew, yNew));
@@ -42,6 +43,12 @@ void GameLogic::doTurn(int vertexOne, int vertexTwo,
 		QPoint p2 = borderPoints.at(i);
 
 		fillLine(p1, p2);
+
+		if (mIsIntersect) {
+			mField.undo();
+			mIsIntersect = false;
+			return false;
+		}
 	}
 
 	mField.set(kVertexPoint, xNew, yNew);
@@ -54,6 +61,9 @@ void GameLogic::doTurn(int vertexOne, int vertexTwo,
 	}
 
 	mTurns++;
+
+	mField.update();
+	return true;
 }
 
 int GameLogic::lastPlayer() const {
@@ -77,6 +87,10 @@ void GameLogic::fillLine(const QPoint &p1, const QPoint &p2) {
 	int error = dx - dy;
 
 	while (true) {
+		if (mField.at(x1, y1) == kBorderPoint) {
+			mIsIntersect = true;
+			return;
+		}
 		mField.set(kBorderPoint, x1, y1);
 		if ((x1 == x2) && (y1 == y2)) {
 			return;

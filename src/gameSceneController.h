@@ -20,6 +20,8 @@ class GameSceneController : public QObject
 public:
 	explicit GameSceneController(QObject *parent = 0);
 
+	void setDistances(int dist) { mMinDistance = dist; }
+
 signals:
 	void newLineAdded(const QVector<QPoint> &points, const QPoint &newPoint);
 
@@ -39,6 +41,8 @@ protected:
 private:
 	QVector<QPoint> mPoints;
 	QPoint mNewPoint;
+
+	int mMinDistance;
 };
 
 }  // namespace scene

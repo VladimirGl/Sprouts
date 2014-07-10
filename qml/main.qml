@@ -41,6 +41,7 @@ Window {
             break
         case 1:
             canvas.clear()
+            canvas.init()
             setState(2)
             break
         case 2:
@@ -94,7 +95,25 @@ Window {
 
         property int lastX: 0
         property int lastY: 0
-//        property color color : "#33B5E5"
+
+        property int newX: 0
+        property int newY: 0
+
+        property color backgroundColor: "#ffffff"
+
+        property var lastVertex
+        property var lastView
+        property bool isImageDrawed: false
+
+        function init() {
+            var ctx = getContext('2d')
+
+            ctx.fillStyle = backgroundColor
+
+            ctx.fillRect(0, 0, width, height)
+
+            lastView = canvas.toDataURL()
+        }
 
         function clear() {
             var ctx = getContext('2d')
@@ -109,8 +128,14 @@ Window {
         }
 
         function undo() {
+            lastVertex.incrLives()
+            isImageDrawed = false
+            console.log("pshh")
+            loadImage(lastView)
+            imageLoaded()
+            game.clear()
 
-
+            console.log("undoend")
         }
 
         function createPoint(x, y) {
@@ -142,22 +167,75 @@ Window {
             field.numberOfPoints++
         }
 
+        function isBackground(r, g, b, a) {
+            return (backgroundColor.toString() == Qt.rgba(r, g, b, a).toString())
+        }
+
+        function isIntersected(ctx, lastX, lastY, newX, newY) {
+
+            var diff = 3
+
+            var sx = lastX <= newX ? 2 : -diff - 2
+            var sy = lastY <= newY ? 2 : -diff - 2
+
+            var c = ctx.getImageData(lastX + sx,
+                                     lastY + sy,
+                                     diff,
+                                     diff).data
+
+            for (var i = 0; i < c.length; i += 4) {
+                if (!isBackground(c[i + 0] / 255, c[i + 1] / 255,
+                                  c[i + 2] / 255, c[i + 3] / 255)) {
+                    return true
+                }
+            }
+
+            return false
+        }
+
         onPaint: {
             var ctx = getContext('2d')
+
+            if (isImageLoaded(lastView) && !isImageDrawed) {
+                ctx.drawImage(lastView, 0, 0)
+                isImageDrawed = true
+                return
+            }
+
 //            ctx.clearRect(0, 0, 300, 300)
-            ctx.lineWidth = 3
+            ctx.lineWidth = 2
             ctx.strokeStyle = "#33B5E5"
             ctx.beginPath()
             ctx.moveTo(lastX, lastY)
-            lastX = area.mouseX
-            lastY = area.mouseY
 
-//            var c = ctx.getImageData(lastX, lastY, 1, 1)
-//            game.drawEnds(c.data[0], c.data[1])
+            if (isIntersected(ctx, lastX, lastY, newX, newY) && field.state != 5 && field.state != 6) {
+                return
+            }
+
+            lastX = newX
+            lastY = newY
 
             game.addPoint(lastX, lastY)
             ctx.lineTo(lastX, lastY)
             ctx.stroke()
+
+            ctx.closePath()
+        }
+
+        onImageLoaded: {
+//            console.log("imgg")
+
+            requestPaint()
+
+//            var ctx = getContext('2d')
+//            ctx.beginPath()
+
+//            ctx.clearRect(0, 0, width, height)
+//            ctx.drawImage(lastView, 0, 0)
+
+//            ctx.closePath()
+
+//            console.log("imageloaded")
         }
 
         MouseArea {
@@ -182,11 +260,15 @@ Window {
                     }
 
                     console.log("line start")
+                    canvas.lastView = canvas.toDataURL()
+
                     game.drawStarts(2, ch.pointNumber)
                     ch.decrLives()
 
-                    canvas.lastX = mouseX
-                    canvas.lastY = mouseY
+                    canvas.lastX = ch.x + ch.width / 2
+                    canvas.lastY = ch.y + ch.height / 2
+
+                    canvas.lastVertex = ch
 
                     field.setState(4)
                     break
@@ -210,16 +292,22 @@ Window {
 
                         if (!ch.isAlive()) {
                             console.log("bad finish")
-                            parent.undo()
+                            canvas.undo()
                             field.setState(3)
                             return
                         }
 
+                        canvas.newX = ch.x + ch.width / 2
+                        canvas.newY = ch.y + ch.height / 2
+
+                        field.setState(5)
+                        canvas.requestPaint()
+
                         game.drawEnds(2, ch.pointNumber)
                         ch.decrLives()
-                        field.setState(5)
                     } else {
                         console.log("bad finish")
+                        canvas.undo()
                         field.setState(3)
                     }
                 }
@@ -227,9 +315,16 @@ Window {
 
             onPositionChanged: {
                 if (field.state == 4) {
-                    console.log("draw")
+                    var ch = parent.childAt(mouseX, mouseY)
+
+                    if (ch.z == 1) {
+                        return
+                    }
 
                     canvas.requestPaint()
+
+                    canvas.newX = mouseX
+                    canvas.newY = mouseY
                 }
             }
         }

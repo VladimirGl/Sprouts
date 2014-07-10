@@ -28,6 +28,9 @@ public:
 	// for more info see http://lodev.org/cgtutor/floodfill.html
 	void floodFill(int value, int x, int y);
 
+	void update();
+	void undo();
+
 	void print() const;
 
 protected:
@@ -38,6 +41,7 @@ private:
 	int mHeight;
 
 	QVector<int> mField;
+	QVector<int> mOldField;
 };
 
 }  // namespace sprouts

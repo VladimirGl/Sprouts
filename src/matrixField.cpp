@@ -107,6 +107,14 @@ void MatrixField::floodFill(int value, int x, int y) {
 	}
 }
 
+void MatrixField::update() {
+	mOldField = mField;
+}
+
+void MatrixField::undo() {
+	mField = mOldField;
+}
+
 void MatrixField::print() const {
 	for (int i = 0; i < mHeight; i++) {
 		for (int j = 0; j < mWidth; j++) {
