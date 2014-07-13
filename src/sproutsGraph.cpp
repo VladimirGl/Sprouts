@@ -36,6 +36,16 @@ bool SproutsGraph::isAlive(int vertex) const {
 	return (isContain(vertex) && (numberOfEdjes(vertex) < mMaxEdges));
 }
 
+bool SproutsGraph::hasNewVerteces() const {
+	for (int i = 0; i < numberOfVertices(); i++) {
+		if (canLoop(i)) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
 int SproutsGraph::numberOfEdjes(int vertex) const {
 	if (isContain(vertex)) {
 		return mAdjList.at(vertex).size();
@@ -88,6 +98,10 @@ int SproutsGraph::numberOfEdjes() const {
 	}
 
 	return (counter / 2);
+}
+
+bool SproutsGraph::canLoop(int vertex) const {
+	return (isContain(vertex) && (numberOfEdjes(vertex) < mMaxEdges - 2));
 }
 
 void SproutsGraph::dfs(QBitArray &visited, int curr) const {

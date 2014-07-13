@@ -19,6 +19,8 @@ public:
 	GameLogic(int width, int height, int players,
 		 const QVector<QPoint> &pointList);
 
+	void setPointSize(int size) { mPointSize = size; }
+
 	// connect vertexOne and vertexTwo, and add point to (xNew, yNew).
 	bool doTurn(int vertexOne, int vertexTwo,
 				int xNew, int yNew,
@@ -28,7 +30,7 @@ public:
 	int lastPlayer() const;
 
 protected:
-	void fillLine(const QPoint &p1, const QPoint &p2, bool isCheckIntersect);
+	void fillLine(const QPoint &p1, const QPoint &p2);
 
 private:
 	MatrixField mField;
@@ -41,6 +43,8 @@ private:
 
 	int mFaces;
 	int mLastValue;
+
+	int mPointSize;
 
 	bool mIsIntersect;
 };

@@ -6,10 +6,12 @@
 #include "src/gameLogic.h"
 
 #include <QDebug>
+#include "src/dist.h"
 
 namespace sprouts {
 
 const int kStandardNumberOfEdges = 3;
+const int kStandardPointSize = 20;
 
 GameLogic::GameLogic(int width, int height, int players,
 		   const QVector<QPoint> &pointList) :
@@ -20,6 +22,7 @@ GameLogic::GameLogic(int width, int height, int players,
 	mPlayers(players),
 	mFaces(1),
 	mLastValue(0),
+	mPointSize(kStandardPointSize),
 	mIsIntersect(false)
 {
 	for (int i = 0; i < pointList.size(); i++) {
@@ -35,13 +38,40 @@ bool GameLogic::doTurn(int vertexOne, int vertexTwo,
 				  const QVector<QPoint> &borderPoints) {
 	mPoints.append(QPoint(xNew, yNew));
 
-	for (int i = 1; i < borderPoints.size(); i++) {
+	qDebug() << mPoints;
+
+	int num = 1;
+	QPoint p = borderPoints.first();
+
+	qDebug() << vertexOne;
+	qDebug() << vertexTwo;
+
+	while ((dist(p, mPoints.at(vertexOne)) < mPointSize * mPointSize)
+		   && (num < borderPoints.size())) {
+		qDebug() << (dist(p, mPoints.at(vertexOne)) < mPointSize * mPointSize);
+		qDebug() << dist(p, mPoints.at(vertexOne));
+		p = borderPoints.at(num);
+		qDebug() << "find";
+		qDebug() << num;
+		num++;
+	}
+
+	fillLine(p, mPoints.at(vertexOne));
+
+	for (int i = num; i < borderPoints.size(); i++) {
 		QPoint p1 = borderPoints.at(i - 1);
 		QPoint p2 = borderPoints.at(i);
 
-		bool isCheckedIntersect = true;
-		fillLine(p1, p2, isCheckedIntersect);
+		if (dist(p2, mPoints.at(vertexOne)) < mPointSize * mPointSize) {
+			qDebug() << i;
+			qDebug() << "beda";
+			fillLine(p1, mPoints.at(vertexTwo));
+			break;
+		}
 
+		qDebug() << "nobeda";
+
+		fillLine(p1, p2);
 		if (mIsIntersect) {
 			mIsIntersect = false;
 			mField.undo();
@@ -50,21 +80,14 @@ bool GameLogic::doTurn(int vertexOne, int vertexTwo,
 		}
 	}
 
-	QPoint p1 = borderPoints.first();
-	QPoint p2 = borderPoints.last();
-	if (p1 == p2) {
-		fillLine(p1, p2, false);
-	}
-	if (mIsIntersect) {
-		mIsIntersect = false;
-		mField.undo();
-		mPoints.removeLast();
-		return false;
-	}
+	qDebug() << "wat";
 
-	mField.set(kVertexPoint, p1.x(), p1.y());
-	mField.set(kVertexPoint, p2.x(), p2.y());
+	qDebug() << "p1 " <<  mPoints.at(vertexOne);
+	mField.set(kVertexPoint, mPoints.at(vertexOne).x(), mPoints.at(vertexOne).y());
+	qDebug() << "p2 " << mPoints.at(vertexTwo);
+	mField.set(kVertexPoint, mPoints.at(vertexTwo).x(), mPoints.at(vertexTwo).y());
 	mField.set(kVertexPoint, xNew, yNew);
+	qDebug() << "new" << QPoint(xNew, yNew);
 
 	mGraph.addVertex();
 	mGraph.addConnection(vertexOne, mGraph.lastVertex());
@@ -90,7 +113,7 @@ int GameLogic::lastPlayer() const {
 	return mTurns % mPlayers;
 }
 
-void GameLogic::fillLine(const QPoint &p1, const QPoint &p2, bool isCheckIntersect) {
+void GameLogic::fillLine(const QPoint &p1, const QPoint &p2) {
 	int x1 = p1.x();
 	int y1 = p1.y();
 	int x2 = p2.x();
@@ -136,30 +159,29 @@ void GameLogic::fillLine(const QPoint &p1, const QPoint &p2, bool isCheckInterse
 }
 
 bool GameLogic::hasTurn() const {
-	QVector<int> alive = mGraph.aliveVertices();
+	if (mGraph.hasNewVerteces()) {
+		return true;
+	}
 
+	QVector<int> alive = mGraph.aliveVertices();
 	QVector<QSet<int> > sets;
 
 	for (int i = 0; i < alive.size(); i++) {
-		QPoint temp = mPoints.at(alive.at(i));
+		QPoint temp2 = mPoints.at(alive.at(i));
 
-		qDebug() << alive.at(i) << " " << mField.neighborValues(temp.x(), temp.y());
-
-		sets.append(mField.neighborValues(temp.x(), temp.y()));
+		QSet<int> temp =  mField.neighborValues(temp2.x(), temp2.y());
+		sets.append(temp);
 	}
 
-	bool hasIntersect = false;
-
-	for (int i = 0; i < sets.size(); i++) {
+	for (int i = 0; i < sets.size() - 1; i++) {
 		for (int j = i + 1; j < sets.size(); j++) {
-			if (!sets[i].intersect(sets.at(j)).isEmpty()) {
-				hasIntersect = true;
-				break;
+			if (!(sets.at(i) & sets.at(j)).isEmpty()) {
+				return true;
 			}
 		}
 	}
 
-	return hasIntersect;
+	return false;
 }
 
 }  // namespace sprouts

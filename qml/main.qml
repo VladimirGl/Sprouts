@@ -155,6 +155,7 @@ Window {
             if (field.state == 8) {
                 secondVertex.incrLives()
                 children[children.length - 1].destroy()
+                numberOfPoints--
             }
 
             isImageDrawed = false

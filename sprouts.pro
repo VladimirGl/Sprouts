@@ -29,4 +29,5 @@ HEADERS += \
     src/initSceneController.h \
     src/gameSceneController.h \
     src/gameLogic.h \
-    src/gameLogicController.h
+    src/gameLogicController.h \
+    src/dist.h

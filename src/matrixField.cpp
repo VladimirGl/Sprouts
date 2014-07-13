@@ -32,13 +32,14 @@ QSet<int> MatrixField::neighborValues(int x, int y) const {
 	if (at(x, y) != kVertexPoint) {
 		qDebug() << x << " " << y;
 		qDebug() << "not vertex";
+		qDebug() << at(x, y);
 		return QSet<int>();
 	}
 
 	QSet<int> set;
 
-	for (int i = -1; i <= 1; i++) {
-		for (int j = -1; j <= 1; j++) {
+	for (int i = -3; i <= 3; i++) {
+		for (int j = -3; j <= 3; j++) {
 			int value = at(x + j, y + i);
 
 			if (isValue(value)) {
@@ -47,6 +48,9 @@ QSet<int> MatrixField::neighborValues(int x, int y) const {
 		}
 	}
 
+	if (set.isEmpty()) {
+		qDebug() << "NOCOLOR";
+	}
 	return set;
 }
 

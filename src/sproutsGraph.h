@@ -23,6 +23,8 @@ public:
 	bool isContain(int vertex) const;
 	bool isAlive(int vertex) const;
 
+	bool hasNewVerteces() const;
+
 	int numberOfEdjes(int vertex) const;
 
 	int numberOfVertices() const { return mAdjList.size(); }
@@ -37,6 +39,8 @@ public:
 protected:
 	int numberOfComponents() const;
 	int numberOfEdjes() const;
+
+	bool canLoop(int vertex) const;
 
 	void dfs(QBitArray &visited, int curr) const;
 
